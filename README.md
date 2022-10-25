@@ -1,6 +1,6 @@
 # Visualize your DeGiro portfolio in TradingView
 
-# Installation
+## Installation
 
 ```
 $ git clone https://github.com/topscoder/degiro-tradingview.git
@@ -20,8 +20,8 @@ $ npm start
 [ok] written to porto.pine
 ```
 
-Open porto.pine in TradingView and open one of your stock positions. You will see a line at your (avg) entry and eventually a line(s) for remaining orders you have in DeGiro.
+Open `porto.pine` in TradingView, click 'Add to Chart' and open one of your stock positions. You will see a line at your (avg) entry and eventually a line(s) for remaining orders you have in DeGiro.
 
 ___
 
-# Important: Never Ever Share Your DeGiro Credentials from .accounts.json
+# Important: Never Ever Share Your DeGiro Credentials From .accounts.json To Anyone. Period.
