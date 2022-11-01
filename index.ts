@@ -16,20 +16,56 @@ type DeGiroAccount = {
 
 let content = ""
 
-let getSymbol = async (degiro: DeGiro, name: string) => {
+/**
+ *
+ * @param degiro
+ * @param name
+ * @returns
+ *
+ * {
+    id: '19750059',
+    name: 'American Electric Power Company Inc',
+    isin: 'US0255371017',
+    symbol: 'AEP',
+    contractSize: 1,
+    productType: 'STOCK',
+    productTypeId: 1,
+    tradable: true,
+    category: 'D',
+    currency: 'EUR',
+    active: true,
+    exchangeId: '196',
+    onlyEodPrices: false,
+    orderTimeTypes: [ 'DAY', 'GTC' ],
+    buyOrderTypes: [ 'LIMIT', 'MARKET', 'STOPLOSS', 'STOPLIMIT' ],
+    sellOrderTypes: [ 'LIMIT', 'MARKET', 'STOPLOSS', 'STOPLIMIT' ],
+    productBitTypes: [ 'US_RAS_GREEN_LIST' ],
+    closePrice: 88.91,
+    closePriceDate: '2022-10-31',
+    feedQuality: 'R',
+    orderBookDepth: 0,
+    vwdIdentifierType: 'vwdkey',
+    vwdId: 'US0255371017.TRADE,E',
+    qualitySwitchable: false,
+    qualitySwitchFree: false,
+    vwdModuleId: 34
+    }
+ */
+let getProduct = async (degiro: DeGiro, name: string) => {
     const result = await degiro.searchProduct({
         text: name,
-        // type: DeGiroProducTypes.shares,
         limit: 1,
     })
 
     if (result && result.length > 0) {
-        if (result[0]["symbol"] != "") {
-            return result[0]["symbol"]
+        for (let i in result) {
+            if (result[i]['active'] == true) {
+                return result[i]
+            }
         }
     }
 
-    return ""
+    return null
 }
 
 /**
@@ -56,7 +92,7 @@ let fetchPositionsAndOrders = async (account : DeGiroAccount) => {
     portfolio.forEach( function(value) {
         // Print pine script to draw GAK line
         let label = `${account.user}: GAK`
-        const { tickerlabel, ticker } = getTicker(value.productData.vwdId, value.productData.symbol)
+        const { tickerlabel, ticker } = getTickerByProduct(value.productData)
         content += `// ${value.productData.name}\n`
         content += printOrder(value.breakEvenPrice, label, tickerlabel, ticker, 'color.white')
     })
@@ -67,57 +103,51 @@ let fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         lastTransactions: false
     })
 
-    // Check if there are open buy/sell orders
-    orders.forEach( async (order, index) => {
-        let name = orders[index]['product']
-        let symbol = await getSymbol(degiro, name)
-        const { tickerlabel, ticker } = getTicker("", symbol)
+    // Check if there are open buy/sell order
+    for ( const index in orders ) {
+        const name = orders[index]['product']
+        const product = await getProduct(degiro, name)
+        const { tickerlabel, ticker } = getTickerByProduct(product)
 
-        let price = orders[index]['price']
-        let label = orders[index]['buysell'] == 'S' ? 'TP' : 'BUY'
-        let color = orders[index]['buysell'] == 'S' ? 'color.green' : 'color.orange'
+        if ( ticker == "" ) {
+            console.error(`Whoopss.. Panic at the disco!`)
+            console.error(`Could not resolve ticker for ${name}`)
+            continue
+        }
+
+        const price = orders[index]['price']
+        const label = orders[index]['buysell'] == 'S' ? 'TP' : 'BUY'
+        const color = orders[index]['buysell'] == 'S' ? 'color.green' : 'color.orange'
 
         content += `// ${name}\n`
         content += printOrder(price, `${account.user}: ${label}`, tickerlabel, ticker, color)
-    })
+    }
 
     await degiro.logout()
 
     return Promise.resolve(content)
 }
 
-/**
- *
- * @param vwdId
- * @param symbol
- * @returns
- */
-let getTicker = (vwdId: string, symbol: string) => {
-    let vwd = vwdId.toString().match(/^(.*?)\.(.*?)\,(.*?)$/)  // "vwdId": "MSFT.NASDAQ,E",
-
+let getTickerByProduct = (product: any) => {
     let tickerlabel = ""
     let ticker = ""
 
-    if ( vwd != null ) {
-        tickerlabel = "syminfo.tickerid"
-        ticker = `${vwd[2]}:${vwd[1]}` // NASDAQ:MSFT
-    } else {
+    // Try symbol
+    if ( product['symbol'] != "" ) {
         tickerlabel = "syminfo.ticker"
-        ticker = `${symbol}` // MSFT
+        ticker = product['symbol']
+
+    } else {
+        // Try vwdId
+        let vwd : Array<any> = product['vwdId'].toString().match(/^(.*?)\.(.*?)\,(.*?)$/)  // "vwdId": "MSFT.NASDAQ,E",
+        if ( vwd != null && vwd.length > 0 ) {
+            tickerlabel = "syminfo.tickerid"
+            ticker = `${vwd[2]}:${vwd[1]}` // NASDAQ:MSFT
+        }
+
     }
 
-    // Fix Japan Tobacco ticker
-    if ( ticker == "2914" )
-        ticker = "JAT"
-
-    // Fix Japan Tobacco ticker
-    if ( ticker == "TRADEGATE:JP3726800000" )
-        ticker = "TRADEGATE:JAT"
-
-    // Fix Tradegate ticker
-    ticker = ticker.replace("TRADE:", "TRADEGATE:")
-
-    return { tickerlabel, ticker }
+    return { "tickerlabel": tickerlabel, "ticker": ticker }
 }
 
 /**
@@ -129,9 +159,12 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
 
 (async () => {
 
+    const now = new Date()
+
     // TradingView Indicator Header
     content += "//@version=5 \n"
     content += `indicator("${PORTO_LABEL}", "", true) \n`
+    content += `// Generated at ${now.toLocaleString()} \n`
     content += `// Add to Pine Editor, click Add to Chart\n`
     content += `// Ensure "Indicator and financials name labels" is enabled\n`
     content += `// GAK = Gemiddelde Aankoopprijs\n`
