@@ -7,7 +7,7 @@ process.removeAllListeners('warning')
 
 // TODO Overview box with all positions
 
-let PORTO_LABEL = "PORTO"
+let PORTO_LABEL = "DEGIRO PORTO"
 
 type DeGiroAccount = {
   pwd: string,
