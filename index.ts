@@ -51,7 +51,7 @@ let content = ""
     vwdModuleId: 34
     }
  */
-let getProduct = async (degiro: DeGiro, name: string) => {
+const getProduct = async (degiro: DeGiro, name: string) => {
     const result = await degiro.searchProduct({
         text: name,
         limit: 1,
@@ -73,7 +73,7 @@ let getProduct = async (degiro: DeGiro, name: string) => {
  *
  * @param account : DeGiroAccount
  */
-let fetchPositionsAndOrders = async (account : DeGiroAccount) => {
+const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
 
     // DeGiro Login
     const degiro: DeGiro = new DeGiro({
@@ -147,6 +147,11 @@ let getTickerByProduct = (product: any) => {
 
     }
 
+    // TODO: Fix fundamentally
+    if ( ticker == "FB2A" ) {
+        ticker = "META"
+    }
+
     return { "tickerlabel": tickerlabel, "ticker": ticker }
 }
 
@@ -168,6 +173,7 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
     content += `// Add to Pine Editor, click Add to Chart\n`
     content += `// Ensure "Indicator and financials name labels" is enabled\n`
     content += `// GAK = Gemiddelde Aankoopprijs\n`
+    content += `\n`
 
     for (let account of accounts) {
         await fetchPositionsAndOrders(account)
