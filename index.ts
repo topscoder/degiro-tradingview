@@ -94,8 +94,8 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
     console.log("[ ] Fetching actual portfolio...")
 
     portfolio.forEach( function(value) {
-        // Print pine script to draw GAK line
-        let label = `${value.size} x / ${account.user} / GAK`
+        // Print pine script to draw AVG line
+        let label = `${value.size} x AVG`
         const { tickerlabel, ticker } = getTickerByProduct(value.productData)
         content += `// ${value.productData.name}\n`
         content += printOrder(value.breakEvenPrice, label, tickerlabel, ticker, 'color.white')
@@ -108,6 +108,8 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         active: true,
         lastTransactions: false
     })
+
+    // console.log(orders);
 
     // Check if there are open buy/sell order
     for ( const index in orders ) {
@@ -126,7 +128,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         const color = orders[index]['buysell'] == 'S' ? 'color.green' : 'color.orange'
 
         content += `// ${name}\n`
-        content += printOrder(price, `${account.user} / ${label}`, tickerlabel, ticker, color)
+        content += printOrder(price, `${orders[index]['size']} x ${label}`, tickerlabel, ticker, color)
     }
 
     console.log("[ ] Logout from degiro...")
@@ -180,7 +182,7 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
     content += `// Generated at ${now.toLocaleString()} \n`
     content += `// Add to Pine Editor, click Add to Chart\n`
     content += `// Ensure "Indicator and financials name labels" is enabled\n`
-    content += `// GAK = Gemiddelde Aankoopprijs\n`
+    content += `// AVG = Average share price\n`
     content += `\n`
 
     for (let account of accounts) {
