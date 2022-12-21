@@ -17,9 +17,6 @@ And after that run the following command:
 
 ```
 $ npm start
-> ts-node index.ts
-
-[ok] written to porto.pine
 ```
 
 Open `porto.pine` in TradingView, click 'Add to Chart' and open one of your stock positions. You will see a line at your (avg) entry and eventually a line(s) for remaining orders you have in DeGiro.

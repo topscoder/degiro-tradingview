@@ -75,6 +75,8 @@ const getProduct = async (degiro: DeGiro, name: string) => {
  */
 const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
 
+    console.log(`[ ] Login to degiro account ${account.user}...`)
+
     // DeGiro Login
     const degiro: DeGiro = new DeGiro({
         username: account.user,
@@ -89,15 +91,19 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         getProductDetails: true
     })
 
+    console.log("[ ] Fetching actual portfolio...")
+
     portfolio.forEach( function(value) {
         // Print pine script to draw GAK line
-        let label = `${account.user}: GAK`
+        let label = `${value.size} x / ${account.user} / GAK`
         const { tickerlabel, ticker } = getTickerByProduct(value.productData)
         content += `// ${value.productData.name}\n`
         content += printOrder(value.breakEvenPrice, label, tickerlabel, ticker, 'color.white')
     })
 
     // Get Orders
+    console.log("[ ] Fetching actual orders...")
+
     const { orders, lastTransactions } = await degiro.getOrders({
         active: true,
         lastTransactions: false
@@ -120,8 +126,10 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         const color = orders[index]['buysell'] == 'S' ? 'color.green' : 'color.orange'
 
         content += `// ${name}\n`
-        content += printOrder(price, `${account.user}: ${label}`, tickerlabel, ticker, color)
+        content += printOrder(price, `${account.user} / ${label}`, tickerlabel, ticker, color)
     }
+
+    console.log("[ ] Logout from degiro...")
 
     await degiro.logout()
 
@@ -182,7 +190,7 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
     fs.writeFileSync('./porto.pine', content);
 
     // file written successfully
-    console.log('[ok] written to porto.pine')
+    console.log('[OK] Done. See porto.pine.')
     console.log("")
 
 })()
