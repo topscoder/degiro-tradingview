@@ -75,7 +75,7 @@ const getProduct = async (degiro: DeGiro, name: string) => {
  */
 const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
 
-    console.log(`[ ] Login to degiro account ${account.user}...`)
+    console.log(`[-] Login to degiro account ${account.user}...`)
 
     // DeGiro Login
     const degiro: DeGiro = new DeGiro({
@@ -91,7 +91,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         getProductDetails: true
     })
 
-    console.log("[ ] Fetching actual portfolio...")
+    console.log(`[-] Fetching actual portfolio for ${account.user}...`)
 
     portfolio.forEach( function(value) {
         // Print pine script to draw AVG line
@@ -102,7 +102,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
     })
 
     // Get Orders
-    console.log("[ ] Fetching actual orders...")
+    console.log("[-] Fetching actual orders...")
 
     const { orders, lastTransactions } = await degiro.getOrders({
         active: true,
@@ -131,7 +131,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         content += printOrder(price, `${orders[index]['size']} x ${label}`, tickerlabel, ticker, color)
     }
 
-    console.log("[ ] Logout from degiro...")
+    console.log("[-] Logout from degiro...")
 
     await degiro.logout()
 
@@ -177,7 +177,7 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
     const now = new Date()
 
     // TradingView Indicator Header
-    content += "//@version=5 \n"
+    content += "// @version=5 \n"
     content += `indicator("${PORTO_LABEL}", "", true) \n`
     content += `// Generated at ${now.toLocaleString()} \n`
     content += `// Add to Pine Editor, click Add to Chart\n`
@@ -192,7 +192,7 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
     fs.writeFileSync('./porto.pine', content);
 
     // file written successfully
-    console.log('[OK] Done. See porto.pine.')
+    console.log('[√] Done. See porto.pine.')
     console.log("")
 
 })()
