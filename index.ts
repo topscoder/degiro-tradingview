@@ -9,6 +9,8 @@ process.removeAllListeners('warning')
 
 let PORTO_LABEL = "DEGIRO PORTO"
 
+let porto_tickers = [];
+
 type DeGiroAccount = {
   pwd: string,
   user: string
@@ -97,6 +99,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         // Print pine script to draw AVG line
         let label = `${value.size} x AVG`
         const { tickerlabel, ticker } = getTickerByProduct(value.productData)
+        porto_tickers.push(ticker);
         content += `// ${value.productData.name}\n`
         content += printOrder(value.breakEvenPrice, label, tickerlabel, ticker, 'color.white')
     })
@@ -191,8 +194,24 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
 
     fs.writeFileSync('./porto.pine', content);
 
-    // file written successfully
-    console.log('[√] Done. See porto.pine.')
+    console.log('[√] porto.pine written.')
+
+
+    let tv_settings = "window.tv = [];\n"
+    tv_settings += "window.tv['watchlist'] = [];\n"
+    let index = 0;
+    for (let tick of porto_tickers) {
+        if (index == 0) {
+            tv_settings += `window.tv['symbol'] = '${tick}';\n`
+        }
+
+        tv_settings += `window.tv['watchlist'].push("${tick}");\n`
+
+        index++;
+    }
+
+    fs.writeFileSync('./tv-settings.js', tv_settings);
+    console.log('[√] tv-settings.js written.')
     console.log("")
 
 })()
