@@ -77,7 +77,7 @@ const getProduct = async (degiro: DeGiro, name: string) => {
  */
 const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
 
-    console.log(`[-] Login to degiro account ${account.user}...`)
+    console.log(`[+] Login to degiro account ${account.user}...`)
 
     // DeGiro Login
     const degiro: DeGiro = new DeGiro({
@@ -93,7 +93,7 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         getProductDetails: true
     })
 
-    console.log(`[-] Fetching actual portfolio for ${account.user}...`)
+    console.log(`[+] Fetching actual portfolio for ${account.user}...`)
 
     portfolio.forEach( function(value) {
         // Print pine script to draw AVG line
@@ -105,14 +105,12 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
     })
 
     // Get Orders
-    console.log("[-] Fetching actual orders...")
+    console.log("[+] Fetching actual orders...")
 
     const { orders, lastTransactions } = await degiro.getOrders({
         active: true,
         lastTransactions: false
     })
-
-    // console.log(orders);
 
     // Check if there are open buy/sell order
     for ( const index in orders ) {
@@ -121,8 +119,8 @@ const fetchPositionsAndOrders = async (account : DeGiroAccount) => {
         const { tickerlabel, ticker } = getTickerByProduct(product)
 
         if ( ticker == "" ) {
-            console.error(`Whoopss.. Panic at the disco!`)
-            console.error(`Could not resolve ticker for ${name}`)
+            console.error(`[x] Whoopss.. Panic at the disco!`)
+            console.error(`[x] Could not resolve ticker for ${name}`)
             continue
         }
 
@@ -192,26 +190,34 @@ let printOrder = (price: number, label: string, tickerlabel: string, ticker: str
         await fetchPositionsAndOrders(account)
     }
 
+    content += `\n\nimport MA_PT/easytable/1\n`
+    content += `var string json_porto = '[`
+    for (let tick of porto_tickers) {
+        content += `{"ticker": "${tick}"}, `
+    }
+    content += `]'\n`
+    content += `var tbl = easytable.json_to_table(json_porto)`
+
     fs.writeFileSync('./porto.pine', content);
 
-    console.log('[√] porto.pine written.')
+    console.log('[>] porto.pine written.')
 
 
-    let tv_settings = "window.tv = [];\n"
-    tv_settings += "window.tv['watchlist'] = [];\n"
-    let index = 0;
-    for (let tick of porto_tickers) {
-        if (index == 0) {
-            tv_settings += `window.tv['symbol'] = '${tick}';\n`
-        }
+    // let tv_settings = "window.tv = [];\n"
+    // tv_settings += "window.tv['watchlist'] = [];\n"
+    // let index = 0;
+    // for (let tick of porto_tickers) {
+    //     if (index == 0) {
+    //         tv_settings += `window.tv['symbol'] = '${tick}';\n`
+    //     }
 
-        tv_settings += `window.tv['watchlist'].push("${tick}");\n`
+    //     tv_settings += `window.tv['watchlist'].push("${tick}");\n`
 
-        index++;
-    }
+    //     index++;
+    // }
 
-    fs.writeFileSync('./tv-settings.js', tv_settings);
-    console.log('[√] tv-settings.js written.')
-    console.log("")
+    // fs.writeFileSync('./tv-settings.js', tv_settings);
+    // console.log('[>] tv-settings.js written.')
+    // console.log("")
 
 })()
