@@ -30,4 +30,6 @@ And after that run the following command:
 $ npm start
 ```
 
+[![asciicast](https://asciinema.org/a/dtWGiElisZVUwECw63zja4lbf.svg?autoplay=1)](https://asciinema.org/a/dtWGiElisZVUwECw63zja4lbf?autoplay=1)
+
 Open `porto.pine` in [TradingView](https://www.tradingview.com/gopro/?share_your_love=zdwnsq6cm9), click 'Add to Chart' and open one of your stock positions. You will see a line at your (avg) entry (aka GAK) and eventually a line(s) for remaining buy/sell orders you have for this position.
