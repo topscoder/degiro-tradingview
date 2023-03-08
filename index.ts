@@ -43,5 +43,6 @@ let content = "";
     fs.writeFileSync('./porto.pine', content);
 
     console.log('[>] porto.pine written.')
+    console.log('[>] Now open porto.pine in: TradingView > Pine Editor, Click "Add to Chart" and open one of your positions.')
 
 })()
