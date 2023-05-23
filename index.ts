@@ -2,14 +2,13 @@ import fs from 'fs';
 import process from 'process'
 
 import accounts from './.accounts.json'
+import { StockPosition } from './types/StockPosition'; // Assuming StockPosition type is defined in a separate file
 import fetchPositionsAndOrders from './functions/fetchPositionsAndOrders';
 
 process.removeAllListeners('warning')
 
-// TODO Overview box with all positions
-
 let PORTO_LABEL = "DEGIRO PORTO";
-let porto_tickers = [];
+let porto_positions: StockPosition[] = [];
 let content = "";
 
 (async () => {
@@ -27,18 +26,18 @@ let content = "";
 
     for (let account of accounts) {
         let obj = await fetchPositionsAndOrders(account)
-        porto_tickers.push(...obj.porto_tickers)
+        porto_positions.push(...obj.porto_positions)
         content += obj.content
     }
 
     content += `\n\nimport MA_PT/easytable/1\n`
     content += `var string json_porto = '[`
-    content += `{"ticker": "", "value": "", "PNL": "x %"}, `
-    for (let tick of porto_tickers) {
-        content += `{"ticker": "${tick}", "value": "", "PNL": "x %"}, `
+    for (let pos of porto_positions) {
+        content += `{"ticker": "${pos.tickerId}", "value": "${pos.totalValue}_${pos.currency}", "PNL": "${pos.pnlPercentage}%"}, `
     }
     content += `]'\n`
-    content += `var tbl = easytable.json_to_table(json_porto)`
+    content += `var tbl = easytable.json_to_table(json_porto)\n`
+    content += `easytable.change_table_style(tbl, 3, ${porto_positions.length+1}, 3)\n`
 
     fs.writeFileSync('./porto.pine', content);
 

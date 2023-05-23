@@ -21,12 +21,19 @@ export default (product: any) => {
             tickerlabel = "syminfo.tickerid"
             ticker = `${vwd[2]}:${vwd[1]}` // NASDAQ:MSFT
         }
-
     }
 
     // TODO: Fix fundamentally
     if ( ticker == "FB2A" ) {
         ticker = "META"
+    }
+
+    if ( ticker == "AEND" ) {
+        ticker = "AGN"
+    }
+    
+    if ( ticker == "116" ) {
+        ticker = "WATT"
     }
 
     return { "tickerlabel": tickerlabel, "ticker": ticker }

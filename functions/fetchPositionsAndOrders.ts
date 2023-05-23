@@ -1,20 +1,23 @@
 import DeGiro from "degiro-api"
 import { DeGiroEnums } from "degiro-api"
 import { DeGiroAccount } from "../types/DeGiroAccount"
+import { StockPosition } from "../types/StockPosition"
 import printOrder from "../helpers/printOrder"
 import getTickerByProduct from "./getTickerByProduct"
 import getProduct from "./getProduct"
+
+
 
 /**
  * fetchPositionsAndOrders
  *
  * @param account : DeGiroAccount
- * @return content : Promise.resolve({content, porto_tickers})
+ * @return content : Promise.resolve({content, porto_positions})
  */
 export default async (account : DeGiroAccount) => {
 
     let content = ""
-    let porto_tickers = []
+    let porto_positions = []
     
     console.log(`[+] Login to degiro account ${account.user}...`)
 
@@ -35,13 +38,29 @@ export default async (account : DeGiroAccount) => {
     console.log(`[+] Fetching actual portfolio for ${account.user}...`)
 
     portfolio.forEach( function(value) {
+
         // Print pine script to draw AVG line
         let label = `${value.size} x AVG`
         const { tickerlabel, ticker } = getTickerByProduct(value.productData)
-        porto_tickers.push(ticker);
+
+        const stockPosition: StockPosition = {
+            tickerId: ticker,
+            tickerLabel: tickerlabel,
+            actualPrice: value.price,
+            breakEvenPrice: value.breakEvenPrice,
+            totalValue: Math.round(value.value),
+            pnlPercentage: Math.round(((value.price - value.breakEvenPrice) / value.breakEvenPrice) * 100),
+            currency: value.productData.currency
+        };          
+
+        porto_positions.push(stockPosition);
+
         content += `// ${value.productData.name}\n`
         content += printOrder(value.breakEvenPrice, label, tickerlabel, ticker, 'color.white')
     })
+
+    // Sort alphabetically on tickerId
+    porto_positions.sort((a, b) => a.tickerId.localeCompare(b.tickerId));
 
     // Get Orders
     console.log("[+] Fetching actual orders...")
@@ -75,5 +94,5 @@ export default async (account : DeGiroAccount) => {
 
     await degiro.logout()
 
-    return Promise.resolve({"content": content, "porto_tickers": porto_tickers})
+    return Promise.resolve({"content": content, "porto_positions": porto_positions})
 }
