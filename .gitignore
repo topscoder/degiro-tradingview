@@ -1,4 +1,8 @@
 node_modules/
+degiro-tradingview/
 .accounts.json
+.accounts.degiro.json
+.accounts.bitvavo.json
 porto.pine
-degiro-tradingview
+porto.degiro.pine
+porto.bitvavo.pine
