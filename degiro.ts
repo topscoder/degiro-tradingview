@@ -3,11 +3,12 @@ import process from 'process'
 
 import accounts from './.accounts.json'
 import { StockPosition } from './types/StockPosition'; // Assuming StockPosition type is defined in a separate file
-import fetchPositionsAndOrders from './functions/fetchPositionsAndOrders';
+import fetchPositionsAndOrders from './functions/degiro/fetchPositionsAndOrders';
 
 process.removeAllListeners('warning')
 
 let PORTO_LABEL = "DEGIRO PORTO";
+let OUTPUT_FILE = "porto.degiro.pine";
 let porto_positions: StockPosition[] = [];
 let content = "";
 
@@ -40,9 +41,9 @@ let content = "";
   content += `var tbl = easytable.json_to_table(json_porto)\n`
   content += `easytable.change_table_style(tbl, 3, ${porto_positions.length + 1}, 3)\n`
 
-  fs.writeFileSync('./porto.pine', content);
+  fs.writeFileSync('./' + OUTPUT_FILE, content);
 
-  console.log('[>] porto.pine written.')
+  console.log(`[>] ${OUTPUT_FILE} written.`)
   console.log('[>] Now open porto.pine in: TradingView > Pine Editor, Click "Add to Chart" and open one of your positions.')
 
 })()

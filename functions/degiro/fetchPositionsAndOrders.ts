@@ -1,11 +1,10 @@
 import DeGiro from "degiro-api"
 import { DeGiroEnums } from "degiro-api"
-import { DeGiroAccount } from "../types/DeGiroAccount"
-import { StockPosition } from "../types/StockPosition"
-import printOrder from "../helpers/printOrder"
-import getTickerByProduct from "./getTickerByProduct"
-import getProduct from "./getProduct"
-
+import { DeGiroAccount } from "../../types/DeGiroAccount"
+import { StockPosition } from "../../types/StockPosition"
+import printOrder from "../../helpers/printOrder"
+import getTickerByProduct from "../getTickerByProduct"
+import getProduct from "../getProduct"
 
 
 /**
@@ -18,7 +17,7 @@ export default async (account : DeGiroAccount) => {
 
     let content = ""
     let porto_positions = []
-    
+
     console.log(`[+] Login to degiro account ${account.user}...`)
 
     // DeGiro Login
@@ -51,7 +50,7 @@ export default async (account : DeGiroAccount) => {
             totalValue: Math.round(value.value),
             pnlPercentage: Math.round(((value.price - value.breakEvenPrice) / value.breakEvenPrice) * 100),
             currency: value.productData.currency
-        };          
+        };
 
         porto_positions.push(stockPosition);
 

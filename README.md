@@ -1,8 +1,8 @@
-# Visualize your DeGiro portfolio in TradingView
+# Visualize your DeGiro / Bitvavo portfolio in TradingView
 
 <br>
 
-> ### __Important__: Never Ever Share Your DeGiro Credentials From `.accounts.json` To Anyone.
+> ### __Important__: Never Ever Share Your DeGiro / Bitvavo Credentials From `.accounts.[degiro|bitvavo].json` To Anyone.
 
 <br>
 
@@ -12,6 +12,7 @@
 * node 18.x
 * [TradingView](https://www.tradingview.com/gopro/?share_your_love=zdwnsq6cm9)
 * Degiro username and password
+* [AND/OR] Bitvavo API Key and API Secret
 
 ## Installation
 
@@ -19,17 +20,33 @@
 $ git clone https://github.com/topscoder/degiro-tradingview.git
 $ cd degiro-tradingview
 $ npm install
-$ cp .accounts.example.json .accounts.json
 ```
 
-Now it's time to enter your DeGiro account credentials into the `.accounts.json` file.
+### DEGIRO
+```
+$ cp .accounts.degiro.example.json .accounts.degiro.json\
+```
+
+Now it's time to enter your DeGiro account credentials into the `.accounts.degiro.json` file.
 
 And after that run the following command:
 
 ```
-$ npm start
+$ npm run degiro && cat porto.degiro.pine
 ```
 
-[![asciicast](https://asciinema.org/a/dtWGiElisZVUwECw63zja4lbf.svg?autoplay=1)](https://asciinema.org/a/dtWGiElisZVUwECw63zja4lbf?autoplay=1)
+### Bitvavo
 
-Open `porto.pine` in [TradingView](https://www.tradingview.com/gopro/?share_your_love=zdwnsq6cm9), click 'Add to Chart' and open one of your stock positions. You will see a line at your (avg) entry (aka GAK) and eventually a line(s) for remaining buy/sell orders you have for this position.
+```
+$ cp .accounts.bitvavo.example.json .accounts.bitvavo.json
+```
+
+Now it's time to enter your Bitvavo API Key and API Secret into the `.accounts.bitvavo.json` file.
+
+And after that run the following command:
+
+```
+$ npm run bitvavo && cat porto.bitvavo.pine
+```
+
+Open your generated Pine file in [TradingView](https://www.tradingview.com/gopro/?share_your_love=zdwnsq6cm9), click 'Add to Chart' and open one of your stock positions. You will see a line at your (avg) entry (aka GAK) and eventually a line(s) for remaining buy/sell orders you have for this position.
