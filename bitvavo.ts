@@ -8,7 +8,7 @@ import fetchPositionsAndOrders from './functions/bitvavo/fetchPositionsAndOrders
 process.removeAllListeners('warning')
 
 let PORTO_LABEL = "BITVAVO PORTO";
-let OUTPUT_FILE = "porto.degiro.pine";
+let OUTPUT_FILE = "porto.bitvavo.pine";
 let porto_positions: StockPosition[] = [];
 let content = "";
 
