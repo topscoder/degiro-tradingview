@@ -1,7 +1,8 @@
-import fs from 'fs';
+import fs, { access } from 'fs';
 import process from 'process'
 
-import accounts from './.accounts.json'
+import accountsData from './.accounts.json'
+import validateAccounts from './helpers/validateAccountsDegiro';
 import { StockPosition } from './types/StockPosition'; // Assuming StockPosition type is defined in a separate file
 import fetchPositionsAndOrders from './functions/degiro/fetchPositionsAndOrders';
 
@@ -11,6 +12,7 @@ let PORTO_LABEL = "DEGIRO PORTO";
 let OUTPUT_FILE = "porto.degiro.pine";
 let porto_positions: StockPosition[] = [];
 let content = "";
+let accounts = validateAccounts(accountsData);
 
 (async () => {
 

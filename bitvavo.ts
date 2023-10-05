@@ -1,7 +1,8 @@
 import fs from 'fs';
 import process from 'process'
 
-import account from './.accounts.bitvavo.json'
+import accountsData from './.accounts.bitvavo.json'
+import validateAccounts from './helpers/validateAccountsBitvavo';
 import { StockPosition } from './types/StockPosition'; // Assuming StockPosition type is defined in a separate file
 import fetchPositionsAndOrders from './functions/bitvavo/fetchPositionsAndOrders';
 
@@ -11,6 +12,7 @@ let PORTO_LABEL = "BITVAVO PORTO";
 let OUTPUT_FILE = "porto.bitvavo.pine";
 let porto_positions: StockPosition[] = [];
 let content = "";
+let account = validateAccounts(accountsData);
 
 (async () => {
 
@@ -44,4 +46,5 @@ let content = "";
     console.log(`[>] ${OUTPUT_FILE} written.\n`)
     console.log(`[>] Now open ${OUTPUT_FILE} in: TradingView > Pine Editor, Click "Add to Chart" and open one of your positions.`)
 
+    process.exit(0);
 })()
