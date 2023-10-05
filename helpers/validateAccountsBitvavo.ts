@@ -1,7 +1,5 @@
-interface AccountBitvavo {
-    APIKEY: string;
-    APISECRET: string;
-}
+import { AccountBitvavo } from "../interfaces/AccountBitvavo";
+
 
 /**
  * validateAccountsBitvavo
