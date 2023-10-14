@@ -1,7 +1,7 @@
 import fs, { access } from 'fs';
 import process from 'process'
 
-import accountsData from './.accounts.json'
+import accountsData from './.accounts.degiro.json'
 import validateAccounts from './helpers/validateAccountsDegiro';
 import { StockPosition } from './types/StockPosition'; // Assuming StockPosition type is defined in a separate file
 import fetchPositionsAndOrders from './functions/degiro/fetchPositionsAndOrders';
