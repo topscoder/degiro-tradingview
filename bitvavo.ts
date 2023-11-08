@@ -46,5 +46,5 @@ let account = validateAccounts(accountsData);
     console.log(`[>] ${OUTPUT_FILE} written.\n`)
     console.log(`[>] Now open ${OUTPUT_FILE} in: TradingView > Pine Editor, Click "Add to Chart" and open one of your positions.`)
 
-    process.exit(0);
+    process.exit(0)
 })()

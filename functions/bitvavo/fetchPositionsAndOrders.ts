@@ -18,7 +18,7 @@ export default async (api_key: string, api_secret: string) => {
     const bitvavo = require('bitvavo')().options({
         APIKEY: api_key,
         APISECRET: api_secret,
-        ACCESSWINDOW: 2000,
+        ACCESSWINDOW: 30000,
         RESTURL: 'https://api.bitvavo.com/v2',
         WSURL: 'wss://ws.bitvavo.com/v2/',
         DEBUGGING: false
@@ -27,14 +27,15 @@ export default async (api_key: string, api_secret: string) => {
     console.log(`[+] Fetching actual portfolio from Bitvavo...`)
 
     try {
+        // FETCH OPEN ORDERS
         let response = await bitvavo.ordersOpen({})
         for (let entry of response) {
 
             let label = `${entry.side}`
             content += `// ${entry.market}\n`
 
-            if (entry.status == 'filled')
-                continue;
+            // if (entry.status == 'filled')
+            //     continue;
 
             // {
             // orderId: 'f9991ce3-1337-4926-991c-b3007442342e',
@@ -86,4 +87,8 @@ export default async (api_key: string, api_secret: string) => {
     }
 
     return Promise.resolve({ "content": content, "porto_positions": porto_positions })
+}
+
+const processOrder = () => {
+
 }
