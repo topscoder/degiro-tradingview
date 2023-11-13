@@ -40,5 +40,21 @@ export default (product: any) => {
     ticker = "BP"
   }
 
+  if (ticker == "ADG") {
+    ticker = "AMG"
+  }
+
+  if (ticker == "5ZM") {
+    ticker = "ZM"
+  }
+
+  if (ticker == "RY6") {
+    ticker = "O"
+  }
+
+  if (ticker == "1QZ") {
+    ticker = "COIN"
+  }
+
   return { "tickerlabel": tickerlabel, "ticker": ticker }
 }
