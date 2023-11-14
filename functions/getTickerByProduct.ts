@@ -56,5 +56,13 @@ export default (product: any) => {
     ticker = "COIN"
   }
 
+  if (ticker == "TNTC") {
+    ticker = "PNL"
+  }
+
+  if (ticker == "2HQ") {
+    ticker = "TLRY"
+  }
+
   return { "tickerlabel": tickerlabel, "ticker": ticker }
 }
