@@ -24,7 +24,7 @@ $ npm install
 
 ### DEGIRO
 ```
-$ cp .accounts.degiro.example.json .accounts.degiro.json\
+$ cp .accounts.degiro.example.json .accounts.degiro.json
 ```
 
 Now it's time to enter your DeGiro account credentials into the `.accounts.degiro.json` file.
