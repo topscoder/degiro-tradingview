@@ -64,5 +64,9 @@ export default (product: any) => {
     ticker = "TLRY"
   }
 
+  if (ticker == "1IK") {
+    ticker = "IIPR"
+  }
+
   return { "tickerlabel": tickerlabel, "ticker": ticker }
 }
