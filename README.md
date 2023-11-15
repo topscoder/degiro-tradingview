@@ -6,7 +6,7 @@
 
 <br>
 
-![HEIA_2022-10-26_11-23-57_c8c4c](https://user-images.githubusercontent.com/86197446/197989149-82e2aecd-65a0-4000-9a36-3a25dc47d51c.png)
+![HEIA_2022-10-26_11-23-57_c8c4c](https://github.com/topscoder/degiro-tradingview/assets/86197446/e7b70596-f2b9-4e67-8fe9-7a201076d0c6)
 
 ## Requirements
 * node 18.x
