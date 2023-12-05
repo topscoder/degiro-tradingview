@@ -64,8 +64,24 @@ export default (product: any) => {
     ticker = "TLRY"
   }
 
+  // Innovative Industrial Properties Inc
   if (ticker == "1IK") {
     ticker = "IIPR"
+  }
+
+  // Unilever PLC
+  if (ticker == "UNVB") {
+    ticker = "UNA"
+  }
+
+  // BlackBerry Ltd
+  if (ticker == "RI1") {
+    ticker = "BB"
+  }
+
+  // Plug Power Inc
+  if (ticker == "PLUN") {
+    ticker = "PLUG"
   }
 
   return { "tickerlabel": tickerlabel, "ticker": ticker }
