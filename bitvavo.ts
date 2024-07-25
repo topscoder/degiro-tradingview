@@ -13,6 +13,7 @@ let OUTPUT_FILE = "porto.bitvavo.pine";
 let porto_positions: StockPosition[] = [];
 let content = "";
 let account = validateAccounts(accountsData);
+let leaderboard = false;
 
 (async () => {
 
@@ -31,15 +32,17 @@ let account = validateAccounts(accountsData);
     porto_positions.push(...obj.porto_positions)
     content += obj.content
 
-    content += `\n\nimport MA_PT/easytable/1\n`
-    content += `var string json_porto = '[`
-    for (let pos of porto_positions) {
-        let posPnl = pos.pnlPercentage > 0 ? "+" + pos.pnlPercentage : pos.pnlPercentage
-        content += `{"ticker": "${pos.tickerId}", "value": "${pos.totalValue}_${pos.currency}", "PNL": "${posPnl}%"}, `
+    if (leaderboard) {
+        content += `\n\nimport MA_PT/easytable/1\n`
+        content += `var string json_porto = '[`
+        for (let pos of porto_positions) {
+            let posPnl = pos.pnlPercentage > 0 ? "+" + pos.pnlPercentage : pos.pnlPercentage
+            content += `{"ticker": "${pos.tickerId}", "value": "${pos.totalValue}_${pos.currency}", "PNL": "${posPnl}%"}, `
+        }
+        content += `]'\n`
+        content += `var tbl = easytable.json_to_table(json_porto)\n`
+        content += `easytable.change_table_style(tbl, 3, ${porto_positions.length + 1}, 3)\n`
     }
-    content += `]'\n`
-    content += `var tbl = easytable.json_to_table(json_porto)\n`
-    content += `easytable.change_table_style(tbl, 3, ${porto_positions.length + 1}, 3)\n`
 
     fs.writeFileSync('./' + OUTPUT_FILE, content);
 
